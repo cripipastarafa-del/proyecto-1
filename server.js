@@ -53,3 +53,6 @@ const listener = app.listen(process.env.PORT || 3000, function () {
 });
 
 module.exports = app; //for testing
+app.use(helmet.contentSecurityPolicy({
+  directives: { defaultSrc: ["'self'"], scriptSrc: ["'self'"], styleSrc: ["'self'"] }
+}));
