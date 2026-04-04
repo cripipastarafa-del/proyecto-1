@@ -8,18 +8,18 @@ const cors        = require('cors');
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
-app.use(helmet());  // helmet sin CSP
-
-app.use((req, res, next) => {
-  res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; script-src 'self'; style-src 'self'"
-  );
-  next();
-});
+const helmet            = require('helmet');
 
 const app = express();
 
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", 'https://code.jquery.com/jquery-3.6.0.min.js'],;
+    styleSrc: ["'self'" ],
+  },
+})
+);
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
