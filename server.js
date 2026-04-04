@@ -4,7 +4,6 @@ const express     = require('express');
 const bodyParser  = require('body-parser');
 const cors        = require('cors');
 
-
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
@@ -12,13 +11,16 @@ const helmet            = require('helmet');
 
 const app = express();
 
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    defaultSrc: ["'self'"],
-    scriptSrc: ["'self'", 'https://code.jquery.com/jquery-3.6.0.min.js'],
-    styleSrc: ["'self'" ],
-  },
-})
+const helmet            = require('helmet');
+
+app.use(
+  helmet.contentSecurityPolicy({
+   directives: {
+     defaultSrc: ["'self'"],
+     scriptSrc: ["'self'", 'https://code.jquery.com/jquery-3.6.0.min.js'],
+     styleSrc: ["'self'" ],
+    },
+  })
 );
 
 app.use('/public', express.static(process.cwd() + '/public'));
