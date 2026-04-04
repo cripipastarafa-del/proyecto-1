@@ -12,13 +12,14 @@ const helmet            = require('helmet');
 
 const app = express();
 
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    defaultSrc: ["'self'"],
-    scriptSrc: ["'self'", 'https://code.jquery.com/jquery-3.6.0.min.js'],;
-    styleSrc: ["'self'" ],
-  },
-})
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+     scriptSrc: ["'self'", 'https://code.jquery.com/jquery-3.6.0.min.js'],;
+     styleSrc: ["'self'" ],
+    },
+  })
 );
 
 app.use('/public', express.static(process.cwd() + '/public'));
