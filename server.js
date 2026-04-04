@@ -8,18 +8,19 @@ const cors        = require('cors');
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
-const helmet = require('helmet');
+app.use(helmet());  // helmet sin CSP
 
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self'; style-src 'self'"
+  );
+  next();
+});
 
 const app = express();
 
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    defaultSrc: ["'self'"],
-    scriptSrc:  ["'self'"],   // ← solo 'self', sin jQuery
-    styleSrc:   ["'self'"],
-  }
-}));
+
 app.use('/public', express.static(process.cwd() + '/public'));
 
 app.use(cors({origin: '*'})); //For FCC testing purposes only
