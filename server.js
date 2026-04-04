@@ -11,20 +11,15 @@ const runner            = require('./test-runner');
 
 const app = express();
 
-app.use(helmet({
-  frameguard: {         
-    
-    action: 'deny'
-  },
-  contentSecurityPolicy: {    
+app.use(
+  helmet.contentSecurityPolicy({    
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", 'code.jquery.com', 'cdn.freecodecamp.org'],
       styleSrc: ["'self'" ],
     }
-  },
-  dnsPrefetchControl: false    
-}));
+  })
+);
 app.use('/public', express.static(process.cwd() + '/public'));
 
 app.use(cors({origin: '*'})); //For FCC testing purposes only
