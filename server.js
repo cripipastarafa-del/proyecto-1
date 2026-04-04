@@ -13,15 +13,15 @@ const app = express();
 
 const helmet            = require('helmet');
 
-app.use(
-  helmet.contentSecurityPolicy({
-   directives: {
-     defaultSrc: ["'self'"],
-     scriptSrc: ["'self'", 'https://code.jquery.com/jquery-3.6.0.min.js'],
-     styleSrc: ["'self'" ],
-    },
-  })
-);
+app.use(helmet());
+
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self'; style-src 'self'"
+  );
+  next();
+});
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
