@@ -11,17 +11,17 @@ const runner            = require('./test-runner');
  
 const app = express();
  
-// Helmet sin CSP para no interferir
-app.use(helmet());
- 
-// CSP manual: unica forma que funciona con helmet v3
-app.use((req, res, next) => {
-  res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; script-src 'self'; style-src 'self'"
-  );
-  next();
-});
+app.use(helmet.hidePoweredBy());
+app.use(helmet.frameguard({action: 'deny'}));
+app.disable('strict-transport-security');
+app.use(helmet.xssFilter());
+app.use(helmet.noSniff())
+app.use(helmet.ieNoOpen());
+var ninetyDaysInSeconds = 90*24*60*60;
+app.use(helmet.hsts({ maxAge: ninetyDaysInSeconds, force: true }));
+app.use(helmet.dnsPrefetchControl());
+app.use(helmet.dnsPrefetchControl());
+app.use(helmet.noCache());
  
 app.use('/public', express.static(process.cwd() + '/public'));
  
