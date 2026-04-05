@@ -3,39 +3,42 @@ require('dotenv').config();
 const express     = require('express');
 const bodyParser  = require('body-parser');
 const cors        = require('cors');
-
+const helmet      = require('helmet');
+ 
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
-
-
+ 
 const app = express();
-
-const helmet            = require('helmet');
-
-app.use(helmet.contentSecurityPolicy({
-	directives:{
-		scriptSrc: ["'self'"],
-		styleSrc: ["'self'"]
-	}
-}))
-
+ 
+// Helmet sin CSP para no interferir
+app.use(helmet());
+ 
+// CSP manual: unica forma que funciona con helmet v3
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self'; style-src 'self'"
+  );
+  next();
+});
+ 
 app.use('/public', express.static(process.cwd() + '/public'));
-
+ 
 app.use(cors({origin: '*'})); //For FCC testing purposes only
-
+ 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+ 
 //Index page (static HTML)
 app.route('/')
   .get(function (req, res) {
     res.sendFile(process.cwd() + '/views/index.html');
   });
-
+ 
 //For FCC testing purposes
 fccTestingRoutes(app);
-
+ 
 //Routing for API 
 apiRoutes(app);  
     
@@ -45,7 +48,7 @@ app.use(function(req, res, next) {
     .type('text')
     .send('Not Found');
 });
-
+ 
 //Start our server and tests!
 const listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
@@ -61,6 +64,6 @@ const listener = app.listen(process.env.PORT || 3000, function () {
     }, 3500);
   }
 });
-
+ 
 module.exports = app; //for testing
 
